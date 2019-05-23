@@ -14,6 +14,9 @@ volatile bool exit_flag = true;
 void sig_handler(int sig)
 {
     switch (sig) {
+    case SIGPIPE:
+        SYS_LOG_ERROR("Received SIGPIPE scheduling shutdown... signal={}", sig);
+        break;
     case SIGINT:
         SYS_LOG_INFO("Received SIGINT scheduling shutdown... signal={}", sig);
         break;
@@ -36,6 +39,16 @@ void set_signal_handlers(void)
     sigaction(SIGINT, &act, NULL);
 }
 
+std::string config_file;
+void check()
+{
+    sleep(3);
+    while (1) {
+        sleep(3);
+        conf.reload(config_file.c_str());
+    }
+}
+
 int main(int argc, char* argv[])
 {
     try {
@@ -46,7 +59,7 @@ int main(int argc, char* argv[])
         }
 
         //config
-        std::string config_file = argv[1];
+        config_file = argv[1];
         dictionary* d = iniparser_load(config_file.c_str());
         if (NULL == d) {
             printf("open config %s failed", config_file.c_str());
@@ -61,6 +74,8 @@ int main(int argc, char* argv[])
         st_log = create_hourly_logger("log_level_logic", conf.get_logic_log_file());
         st_log->set_level(level::level_enum(conf.get_logic_log_level()));
 
+        std::thread(check).detach();
+
         //signal
         signal(SIGHUP, SIG_IGN);
         signal(SIGPIPE, SIG_IGN);
@@ -68,7 +83,7 @@ int main(int argc, char* argv[])
 
 
         //work start
-        MetaServer s;
+        Server s;
         s.open();
 
         //wait stop

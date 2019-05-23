@@ -1,16 +1,16 @@
 #include "server.h"
 
 
-MetaServer::MetaServer()
+Server::Server()
 {
     running_ = false;
 }
 
-MetaServer::~MetaServer()
+Server::~Server()
 {
 }
 
-void MetaServer::open()
+void Server::open()
 {
     if (true == running_) return;
 
@@ -20,7 +20,7 @@ void MetaServer::open()
 
 }
 
-void MetaServer::close()
+void Server::close()
 {
     running_ = false;
     /*

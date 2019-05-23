@@ -6,11 +6,11 @@
 #ifndef __META_SERVER_H__
 #define __META_SERVER_H__
 
-class MetaServer
+class Server
 {
 public:
-    MetaServer();
-    ~MetaServer();
+    Server();
+    ~Server();
 
     void open();
     void close();

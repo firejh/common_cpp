@@ -14,6 +14,8 @@ public:
 
     void load(const char* path);
 
+    void reload(const char* path);
+
     std::string get_process_name() {
         return process_name_;
     }
@@ -34,7 +36,6 @@ public:
     }
 
 private:
-    dictionary* ini_;
 
     std::string process_name_;      //进程名，一台机器部署多个需要区分名称
 
